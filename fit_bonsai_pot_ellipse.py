@@ -22,6 +22,8 @@ parser.add_argument('--ransacNumberOfTrials', help="The number of RANSAC trials.
 parser.add_argument('--ransacAcceptableError', help="The acceptable error for the RANSAC algorithm. Default: 10", type=float, default=10)
 args = parser.parse_args()
 
+random.seed(args.randomSeed)
+
 def main():
     logging.info("fit_bonsai_pot_ellipse.py main()")
 
@@ -34,11 +36,11 @@ def main():
     grayscale_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2GRAY)
     cv2.imwrite(os.path.join(args.outputDirectory, "fitBonsaiPot_main_grayscale.png"), grayscale_img)
 
-    # blur
+    # Blurring
     blurred_img = cv2.blur(grayscale_img, (args.blurringKernelSize, args.blurringKernelSize))
     cv2.imwrite(os.path.join(args.outputDirectory, "fitBonsaiPot_main_blurred.png"), blurred_img)
 
-    # Canny
+    # Canny edge detector
     canny_img = cv2.Canny(blurred_img, args.cannyThreshold1, args.cannyThreshold2)
     cv2.imwrite(os.path.join(args.outputDirectory, "fitBonsaiPot_main_canny.png"), canny_img)
 
@@ -62,7 +64,6 @@ def main():
 
     annotated_img = original_img.copy()
     ellipse_points = consensus_conic_section.EllipsePoints()
-    logging.debug("len(ellipse_points) = {}".format(len(ellipse_points)))
     for ellipse_pt_ndx in range(0, len(ellipse_points) - 1):
         p1 = ellipse_points[ellipse_pt_ndx]
         p2 = ellipse_points[ellipse_pt_ndx + 1]
