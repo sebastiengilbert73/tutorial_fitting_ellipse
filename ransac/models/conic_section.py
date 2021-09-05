@@ -105,13 +105,13 @@ class ConicSection(ransac.Model):  # Input is (x, y) and output is Ax**2 + Bxy +
 
         if abs(Fc) <= zero_threshold:
             raise ValueError("ConicSection.EllipseParameters(): abs(Fc) ({}) <= {}".format(abs(Fc), zero_threshold))
-        USUT = np.array([[Ac, 0.5 * Bc], [0.5 * Bc, Cc]])
+        USUT = np.array([[-Ac/Fc, -0.5 * Bc/Fc], [-0.5 * Bc/Fc, -Cc/Fc]])
         U, s, UT = np.linalg.svd(USUT, full_matrices=True)
 
         theta = cmath.phase(complex(UT[0, 0], UT[0, 1]))
 
-        a = math.sqrt(-Fc/s[0])
-        b = math.sqrt(-Fc/s[1])
+        a = math.sqrt(1/s[0])
+        b = math.sqrt(1/s[1])
         if b > a:
             temp_a = a
             a = b
